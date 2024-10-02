@@ -1,0 +1,42 @@
+version: "3"
+services:
+  billing_api:
+    container_name: billing_api
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    links:
+      - postgres
+    ports:
+      - "4201:4201"
+    environment:
+      - SERVICE_NAME=DOMAINBILLING
+      - DOMAINBILLING_SERVICE_RUN_OPTIONS__HOST=0.0.0.0
+      - DOMAINBILLING_SERVICE_RUN_OPTIONS__PORT=4201
+      - DOMAINBILLING_DB_OPTIONS__HOST=postgres
+      - DOMAINBILLING_DB_OPTIONS__PORT=5432
+      - DOMAINBILLING_DB_OPTIONS__DB_NAME=billing
+      - DOMAINBILLING_DB_OPTIONS__USER=postgres
+      - DOMAINBILLING_DB_OPTIONS__PASSWORD=
+      - DOMAINBILLING_LOGGER_OPTIONS__LOGS_LEVEL=DEBUG
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD:
+      PGDATA: /data/postgres
+      PGUSER: postgres
+    volumes:
+      - /opt/postgres:/data/postgres
+      - ./create-db.sql:/docker-entrypoint-initdb.d/create_database.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready"]
+      interval: 15s
+      timeout: 10s
+      retries: 5

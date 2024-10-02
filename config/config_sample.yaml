@@ -1,0 +1,22 @@
+# Опции запуска сервиса
+service_run_options:
+  # Хост
+  host:
+  # Порт
+  port:
+# Опции подключения к БД
+db_options:
+  # Хост
+  host:
+  # Порт
+  port:
+  # Имя БД
+  db_name:
+  # Имя пользователя
+  user:
+  # Пароль
+  password:
+# Опции логирования
+logger_options:
+  # Уровень консольного лога
+  logs_level: DEBUG
